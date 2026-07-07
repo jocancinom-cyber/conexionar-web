@@ -1,515 +1,150 @@
 <!DOCTYPE html>
-<html lang="es-CL">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Conexionar — Yoga online para mujeres en Chile</title>
-<meta name="description" content="Clases de yoga online por suscripción: Alineamiento, Harmonic, Meditación y Pranayama con la profesora Josefina Fernández. Prueba gratis 7 días.">
+<title>Conexionar — Yoga online</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Quicksand:wght@400;500;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
 <style>
-  /* Paleta y tipografías extraídas del sitio real conexionar.com (WordPress/Elementor) el 2026-07-07 */
-  :root{
-    --hueso:#F2EDE7;        /* fondo general (body real: #f2ede7) */
-    --taupe:#968A80;        /* header/nav y sección "Tipos de clases" (real: #968a80) */
-    --taupe-oscuro:#61574F; /* encabezado de tarjetas de precio (real: #61574f) */
-    --taupe-claro:#D9CFC3;  /* derivado, para pills/bordes suaves */
-    --tan:#C7A17A;          /* botones "Suscribirte" (real: #c7a17a) */
-    --sage:#9CA47C;         /* CTA hero, ribbon "Popular", Contacto, Send (real: #9ca47c) */
-    --texto:#30271C;        /* texto principal (real: #30271c) */
-    --texto-secundario:#62513C; /* texto secundario (real: #62513c) */
-    --blanco:#FFFFFF;
-    --radius:16px;
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{
-    font-family:'Quicksand', sans-serif;
-    background:var(--hueso);
-    color:var(--texto);
-    line-height:1.6;
-  }
-  h1,h2,h3,h4{
-    font-family:'Yeseva One', serif;
-    font-weight:400;
-    line-height:1.15;
-    color:var(--texto);
-  }
-  a{color:inherit; text-decoration:none;}
-  img{max-width:100%; display:block;}
-  .container{max-width:1140px; margin:0 auto; padding:0 24px;}
-  .btn{
-    display:inline-block;
-    padding:14px 28px;
-    border-radius:999px;
-    font-family:'Quicksand', sans-serif;
-    font-weight:700;
-    font-size:16px;
-    cursor:pointer;
-    border:none;
-    transition:transform .15s ease, opacity .15s ease;
-  }
-  .btn:hover{transform:translateY(-2px);}
-  .btn-primary{background:var(--sage); color:var(--blanco);}
-  .btn-tan{background:var(--tan); color:var(--blanco);}
-  .btn-outline{background:transparent; color:var(--taupe-oscuro); border:2px solid var(--taupe-oscuro);}
-  .btn-outline-light{background:transparent; color:var(--blanco); border:2px solid rgba(255,255,255,.7);}
-  .btn-light{background:var(--blanco); color:var(--taupe-oscuro);}
-
-  /* ---------- Header ---------- */
-  header{
-    position:sticky; top:0; z-index:100;
-    background:var(--taupe);
-  }
-  .nav{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:16px 24px;
-  }
-  .logo{display:flex; align-items:center; gap:8px;}
-  .logo-leaves{height:28px; width:auto; flex-shrink:0;}
-  .footer-grid .logo-leaves{height:24px;}
-  .nav-links{display:flex; align-items:center; gap:32px;}
-  .nav-links a{font-weight:700; font-size:15px; color:var(--blanco);}
-  .nav-links a:hover{opacity:.8;}
-  .nav-actions{display:flex; align-items:center; gap:16px;}
-  .nav-actions a.login{font-weight:700; color:var(--blanco);}
-  .menu-toggle{display:none; background:none; border:none; font-size:26px; cursor:pointer; color:var(--blanco);}
-
-  @media (max-width:860px){
-    .nav-links{
-      position:fixed; top:70px; left:0; right:0;
-      background:var(--taupe);
-      flex-direction:column; gap:0;
-      max-height:0; overflow:hidden;
-      transition:max-height .25s ease;
-    }
-    .nav-links.open{max-height:320px;}
-    .nav-links a{padding:16px 24px; width:100%; border-top:1px solid rgba(255,255,255,.15);}
-    .menu-toggle{display:block;}
-  }
-
-  /* ---------- Hero ---------- */
   .hero{
-    padding:72px 0 96px;
-    background:linear-gradient(180deg, var(--taupe) 0%, #B4A99C 100%);
-    color:var(--blanco);
+    background:linear-gradient(135deg, var(--taupe) 0%, var(--sage) 100%);
+    color:#fff; padding:90px 0 100px; text-align:center;
   }
-  .hero-grid{
-    display:grid; grid-template-columns:1.05fr 0.95fr; gap:48px; align-items:center;
+  .hero h1{color:#fff; font-size:44px; max-width:720px; margin:0 auto 18px;}
+  .hero p{max-width:560px; margin:0 auto 32px; font-size:17px; opacity:.95;}
+  .hero .btns{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+
+  .section{padding:72px 0;}
+  .section h2{font-size:32px; text-align:center; margin-bottom:12px;}
+  .section .lead{text-align:center; color:var(--texto-secundario); max-width:560px; margin:0 auto 48px;}
+
+  .beneficios{display:grid; grid-template-columns:repeat(3,1fr); gap:28px;}
+  .beneficio{background:#fff; border-radius:var(--radius); padding:32px 24px; text-align:center; border:1px solid var(--taupe-claro);}
+  .beneficio .icon{font-size:34px; margin-bottom:14px;}
+  .beneficio h3{font-size:19px; margin-bottom:8px;}
+  .beneficio p{font-size:14.5px; color:var(--texto-secundario);}
+
+  .precios{background:var(--hueso);}
+  .precios-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:28px; max-width:800px; margin:0 auto;}
+  .precio-card{background:#fff; border-radius:var(--radius); padding:36px 30px; border:2px solid var(--taupe-claro); text-align:center;}
+  .precio-card.destacado{border-color:var(--tan);}
+  .precio-card .badge{
+    display:inline-block; background:var(--tan); color:#fff; font-size:12px; font-weight:700;
+    padding:4px 12px; border-radius:999px; margin-bottom:12px;
   }
-  .hero-eyebrow{
-    display:inline-block; padding:6px 14px; border-radius:999px;
-    background:rgba(255,255,255,.18); color:var(--blanco);
-    font-weight:700; font-size:13px; margin-bottom:16px;
-  }
-  .hero h1{font-size:44px; margin-bottom:20px; color:var(--blanco);}
-  .hero p.lead{font-size:18px; color:var(--blanco); opacity:.9; margin-bottom:28px; max-width:480px;}
-  .hero-ctas{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;}
-  .hero-note{font-size:14px; opacity:.8;}
-  .video-frame{
-    position:relative; border-radius:var(--radius); overflow:hidden;
-    aspect-ratio:16/10; background:var(--taupe-oscuro);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .video-frame img{width:100%; height:100%; object-fit:cover; display:block;}
-  .play-button{
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    width:64px; height:64px; border-radius:50%; background:rgba(255,255,255,.92);
-    display:flex; align-items:center; justify-content:center; font-size:22px; color:var(--taupe-oscuro);
-    box-shadow:0 6px 18px rgba(0,0,0,.25);
-  }
-  .video-badge{
-    position:absolute; bottom:16px; left:16px;
-    background:rgba(253,252,250,0.95); color:var(--texto);
-    padding:8px 14px; border-radius:999px; font-size:13px; font-weight:700;
-  }
-  @media (max-width:860px){
-    .hero-grid{grid-template-columns:1fr;}
+  .precio-card h3{font-size:20px; margin-bottom:6px;}
+  .precio-card .monto{font-family:'Yeseva One',serif; font-size:38px; margin:10px 0;}
+  .precio-card .monto span{font-size:15px; font-family:'Quicksand',sans-serif; color:var(--texto-secundario);}
+  .precio-card ul{list-style:none; margin:20px 0; text-align:left; font-size:14.5px; color:var(--texto-secundario);}
+  .precio-card ul li{padding:6px 0; padding-left:22px; position:relative;}
+  .precio-card ul li::before{content:"✓"; position:absolute; left:0; color:var(--sage); font-weight:700;}
+  .precio-card .btn{width:100%; margin-top:8px;}
+
+  .cta-final{background:var(--taupe-oscuro); color:#fff; text-align:center; padding:70px 0;}
+  .cta-final h2{color:#fff; font-size:30px; margin-bottom:16px;}
+
+  footer{background:var(--texto); color:var(--hueso); padding:48px 0 24px;}
+  .footer-grid{display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px; margin-bottom:24px;}
+  .footer-grid a{color:var(--hueso); opacity:.85; font-size:14px;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.15); padding-top:20px; font-size:13px; opacity:.7; text-align:center;}
+
+  @media (max-width:760px){
+    .beneficios{grid-template-columns:1fr;}
+    .precios-grid{grid-template-columns:1fr;}
     .hero h1{font-size:32px;}
-  }
-
-  /* ---------- Trust bar ---------- */
-  .trust-bar{
-    background:var(--taupe-oscuro); color:var(--blanco);
-    padding:14px 0;
-  }
-  .trust-bar .container{
-    display:flex; justify-content:center; gap:40px; flex-wrap:wrap;
-    font-size:14px; font-weight:700;
-  }
-
-  /* ---------- Cómo funciona ---------- */
-  section{padding:80px 0;}
-  .section-head{text-align:center; max-width:640px; margin:0 auto 48px;}
-  .section-head h2{font-size:34px; margin-bottom:12px;}
-  .section-head p{opacity:.8; font-size:17px;}
-  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:32px;}
-  .step{text-align:center; padding:0 12px;}
-  .step-num{
-    width:48px; height:48px; border-radius:50%;
-    background:var(--taupe-claro); color:var(--taupe-oscuro);
-    display:flex; align-items:center; justify-content:center;
-    font-family:'Yeseva One',serif; font-weight:400; font-size:20px;
-    margin:0 auto 16px;
-  }
-  .step h3{font-size:19px; margin-bottom:8px;}
-  .step p{font-size:15px; opacity:.8;}
-  @media (max-width:760px){.steps{grid-template-columns:1fr;}}
-
-  /* ---------- Tipos de clase ---------- */
-  .classes-section{background:var(--taupe); color:var(--blanco);}
-  .classes-section .section-head h2{color:var(--blanco);}
-  .classes-section .section-head p{color:var(--blanco); opacity:.85;}
-  .classes-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:24px;}
-  .class-card{
-    text-align:center; padding:12px;
-  }
-  .class-card img{width:64px; height:64px; margin:0 auto 16px; object-fit:contain;}
-  .class-card h3{font-size:20px; margin-bottom:10px; color:var(--blanco); font-style:italic;}
-  .class-card p{font-size:14.5px; opacity:.85;}
-  @media (max-width:900px){.classes-grid{grid-template-columns:repeat(2,1fr);}}
-  @media (max-width:520px){.classes-grid{grid-template-columns:1fr;}}
-
-  /* ---------- Josefina ---------- */
-  .teacher{background:var(--blanco);}
-  .teacher-grid{
-    display:grid; grid-template-columns:0.8fr 1.2fr; gap:48px; align-items:center;
-  }
-  .teacher-photo{
-    aspect-ratio:4/5; border-radius:var(--radius);
-    background:var(--taupe-claro);
-    overflow:hidden;
-  }
-  .teacher-photo img{width:100%; height:100%; object-fit:cover; display:block;}
-  .teacher h2{font-size:30px; margin-bottom:16px;}
-  .teacher .credential{
-    display:inline-block; background:var(--hueso); color:var(--taupe-oscuro);
-    padding:6px 12px; border-radius:999px; font-size:13px; font-weight:700;
-    margin:4px 8px 4px 0;
-  }
-  .teacher p.bio{margin:20px 0; opacity:.85;}
-  @media (max-width:860px){.teacher-grid{grid-template-columns:1fr;}}
-
-  /* ---------- Precios ---------- */
-  .pricing{text-align:center;}
-  .toggle{
-    display:inline-flex; align-items:center; gap:0; background:var(--blanco);
-    border:1px solid var(--taupe-claro); border-radius:999px; padding:4px; margin-bottom:40px;
-  }
-  .toggle button{
-    border:none; background:transparent; padding:10px 22px; border-radius:999px;
-    font-weight:700; font-family:'Quicksand',sans-serif; font-size:15px; cursor:pointer;
-    color:var(--texto); opacity:.6;
-  }
-  .toggle button.active{background:var(--taupe-oscuro); color:var(--blanco); opacity:1;}
-  .price-cards{display:grid; grid-template-columns:repeat(2,1fr); gap:28px; max-width:760px; margin:0 auto;}
-  .price-card{
-    background:var(--blanco); border-radius:var(--radius); overflow:hidden;
-    border:1px solid var(--taupe-claro); text-align:left; position:relative;
-  }
-  .price-card-head{background:var(--taupe-oscuro); color:var(--blanco); padding:20px 28px;}
-  .price-card-head h3{font-size:20px; color:var(--blanco); font-family:'Yeseva One',serif;}
-  .price-card-body{padding:28px;}
-  .badge-ahorra{
-    position:absolute; top:16px; right:-32px; background:var(--sage); color:var(--blanco);
-    padding:4px 40px; font-size:12px; font-weight:700; transform:rotate(45deg);
-  }
-  .price-amount{font-family:'Yeseva One',serif; font-size:38px; font-weight:400; margin:12px 0 4px; color:var(--texto);}
-  .price-period{font-size:14px; color:var(--texto-secundario); margin-bottom:20px;}
-  .price-card ul{list-style:none; margin-bottom:24px;}
-  .price-card li{font-size:14.5px; padding:6px 0; color:var(--texto-secundario);}
-  .price-card li::before{content:"✓ "; color:var(--tan); font-weight:700;}
-  .price-card .btn{width:100%; text-align:center;}
-  .annual-only{display:none;}
-  .monthly-only{display:block;}
-  body.show-annual .annual-only{display:block;}
-  body.show-annual .monthly-only{display:none;}
-  @media (max-width:700px){.price-cards{grid-template-columns:1fr;}}
-
-  /* ---------- Testimonios ---------- */
-  .testimonials{background:var(--blanco);}
-  .testimonials-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
-  .testimonial{
-    background:var(--hueso); border-radius:var(--radius); padding:26px;
-  }
-  .testimonial p.quote{font-size:15px; margin-bottom:16px; font-style:italic;}
-  .testimonial .author{font-weight:700; font-size:14px;}
-  .placeholder-tag{
-    display:inline-block; margin-top:10px; font-size:11px; font-weight:700;
-    color:var(--taupe-oscuro); background:var(--taupe-claro); padding:3px 8px; border-radius:6px;
-  }
-  @media (max-width:860px){.testimonials-grid{grid-template-columns:1fr;}}
-
-  /* ---------- FAQ ---------- */
-  .faq-item{border-bottom:1px solid var(--taupe-claro); padding:20px 0;}
-  .faq-q{
-    display:flex; justify-content:space-between; align-items:center;
-    cursor:pointer; font-weight:700; font-size:16.5px;
-  }
-  .faq-a{max-height:0; overflow:hidden; transition:max-height .25s ease; font-size:15px; opacity:.85;}
-  .faq-item.open .faq-a{max-height:200px; margin-top:12px;}
-  .faq-icon{font-size:20px;}
-
-  /* ---------- CTA final ---------- */
-  .cta-final{
-    background:var(--taupe-oscuro); color:var(--blanco); text-align:center;
-    border-radius:var(--radius); padding:56px 32px; margin:0 24px;
-  }
-  .cta-final h2{color:var(--blanco); font-size:32px; margin-bottom:14px;}
-  .cta-final p{opacity:.9; margin-bottom:28px;}
-
-  /* ---------- Footer ---------- */
-  footer{padding:56px 0 32px; font-size:14px;}
-  .footer-grid{display:grid; grid-template-columns:2fr 1fr 1fr; gap:32px; margin-bottom:32px;}
-  .footer-grid h4{font-size:15px; margin-bottom:14px;}
-  .footer-grid a{display:block; opacity:.75; padding:4px 0;}
-  .footer-social{display:flex; gap:14px; margin-top:14px;}
-  .footer-bottom{
-    border-top:1px solid var(--taupe-claro); padding-top:20px; opacity:.7;
-    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
-  }
-  @media (max-width:700px){.footer-grid{grid-template-columns:1fr;}}
-
-  /* ---------- WhatsApp flotante ---------- */
-  .whatsapp-float{
-    position:fixed; bottom:24px; right:24px; z-index:200;
-    background:#25D366; color:#fff; width:56px; height:56px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center; font-size:28px;
-    box-shadow:0 6px 16px rgba(0,0,0,.2);
   }
 </style>
 </head>
 <body>
 
 <header>
-  <nav class="nav container">
-    <a href="#" class="logo">
-      <img class="logo-leaves" src="https://conexionar.com/wp-content/uploads/2025/04/Group-4.png" alt="Conexionar">
+  <div class="nav container">
+    <a href="index.html" class="logo">
+      <span style="font-family:'Yeseva One',serif; font-size:20px; color:#fff;">Conexionar</span>
     </a>
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button>
-    <div class="nav-links" id="navLinks">
-      <a href="#como-funciona">Cómo funciona</a>
-      <a href="#clases">Clases</a>
-      <a href="#josefina">Josefina</a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Menú">☰</button>
+    <nav class="nav-links" id="navLinks">
+      <a href="#beneficios">Beneficios</a>
       <a href="#precios">Precios</a>
-      <a href="#faq">Preguntas</a>
-    </div>
+      <a href="login.html">Iniciar sesión</a>
+    </nav>
     <div class="nav-actions">
-      <a href="login.html" class="login">Iniciar sesión</a>
-      <a href="registro.html" class="btn btn-primary">Prueba gratis</a>
+      <a href="registro.html" class="btn btn-light">Comenzar</a>
     </div>
-  </nav>
+  </div>
 </header>
 
 <section class="hero">
-  <div class="container hero-grid">
-    <div>
-      <span class="hero-eyebrow">Nuevo: 7 días de prueba gratis</span>
-      <h1>Tu espacio de yoga, cuando tú quieras.</h1>
-      <p class="lead">Clases grabadas de Alineamiento, Harmonic, Meditación y Pranayama, guiadas por Josefina Fernández. Practica desde tu casa, a tu ritmo, sin horarios fijos.</p>
-      <div class="hero-ctas">
-        <a href="registro.html" class="btn btn-primary">Empieza tu prueba gratis de 7 días</a>
-        <a href="#clases" class="btn btn-outline-light">Ver una clase de muestra</a>
-      </div>
-      <p class="hero-note">Sin tarjeta bloqueada de por vida: cancela cuando quieras.</p>
-    </div>
-    <div class="video-frame">
-      <!-- Foto real del sitio actual. Reemplazar por el embed de Vimeo cuando tengamos el video de muestra grabado -->
-      <img src="https://conexionar.com/wp-content/uploads/2025/03/SAM_5618-1-2048x1365.jpg" alt="Clase de yoga Conexionar">
-      <span class="play-button">▶</span>
-      <span class="video-badge">▶ Video de muestra próximamente</span>
-    </div>
-  </div>
-</section>
-
-<div class="trust-bar">
   <div class="container">
-    <span>+4 tipos de clase</span>
-    <span>Prueba gratis 7 días</span>
-    <span>Cancela cuando quieras</span>
-    <span>Garantía de devolución 14 días (plan anual)</span>
+    <h1>Tu espacio de yoga, donde y cuando quieras</h1>
+    <p>Clases de yoga, meditación y pranayama guiadas, pensadas para acompañarte en tu práctica desde casa.</p>
+    <div class="btns">
+      <a href="registro.html?plan=mensual" class="btn btn-light">Comenzar prueba gratuita</a>
+      <a href="#precios" class="btn btn-outline-light">Ver planes</a>
+    </div>
   </div>
-</div>
+</section>
 
-<section id="como-funciona">
+<section class="section" id="beneficios">
   <div class="container">
-    <div class="section-head">
-      <h2>Cómo funciona</h2>
-      <p>Empezar a practicar toma menos de 5 minutos.</p>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <h3>Crea tu cuenta</h3>
-        <p>Regístrate gratis y activa tu prueba de 7 días, sin costo.</p>
+    <h2>Practica a tu ritmo</h2>
+    <p class="lead">Una biblioteca de clases pensada para todos los niveles, con nuevo contenido cada mes.</p>
+    <div class="beneficios">
+      <div class="beneficio">
+        <div class="icon">🧘</div>
+        <h3>Clases variadas</h3>
+        <p>Yoga, meditación guiada y pranayama, en distintos niveles y duraciones.</p>
       </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <h3>Elige tu clase</h3>
-        <p>Filtra por tipo, nivel y duración, y encuentra la práctica ideal para tu día.</p>
+      <div class="beneficio">
+        <div class="icon">📱</div>
+        <h3>Desde cualquier lugar</h3>
+        <p>Accede desde tu celular, tablet o computador, cuando te acomode.</p>
       </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <h3>Practica y avanza</h3>
-        <p>Guardamos tu progreso para que sigas justo donde quedaste.</p>
+      <div class="beneficio">
+        <div class="icon">🌱</div>
+        <h3>A tu propio ritmo</h3>
+        <p>Guarda tu progreso y retoma tus clases favoritas donde las dejaste.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="clases" class="classes-section">
+<section class="section precios" id="precios">
   <div class="container">
-    <div class="section-head">
-      <h2>Cuatro formas de practicar</h2>
-      <p>Cada tipo de clase tiene un propósito distinto, para que armes tu propia rutina.</p>
-    </div>
-    <div class="classes-grid">
-      <div class="class-card">
-        <img src="https://conexionar.com/wp-content/uploads/2025/05/Alineamiento.png" alt="Alineamiento">
-        <h3>Alineamiento</h3>
-        <p>Trabaja la postura y la técnica con precisión, ideal para construir una base sólida.</p>
+    <h2>Elige tu plan</h2>
+    <p class="lead">Comienza con una prueba gratuita, sin compromiso.</p>
+    <div class="precios-grid">
+      <div class="precio-card">
+        <h3>Mensual</h3>
+        <div class="monto">$16.990 <span>/ mes</span></div>
+        <ul>
+          <li>Acceso a toda la biblioteca</li>
+          <li>Nuevas clases cada mes</li>
+          <li>Cancela cuando quieras</li>
+        </ul>
+        <a href="registro.html?plan=mensual" class="btn btn-primary">Comenzar</a>
       </div>
-      <div class="class-card">
-        <img src="https://conexionar.com/wp-content/uploads/2025/05/Harmonic.png" alt="Harmonic">
-        <h3>Harmonic</h3>
-        <p>Secuencias fluidas que conectan movimiento y respiración de forma armónica.</p>
-      </div>
-      <div class="class-card">
-        <img src="https://conexionar.com/wp-content/uploads/2025/05/Meditacion.png" alt="Meditación">
-        <h3>Meditación</h3>
-        <p>Espacios de calma y quietud para bajar la ansiedad y ordenar la mente.</p>
-      </div>
-      <div class="class-card">
-        <img src="https://conexionar.com/wp-content/uploads/2025/05/Pranayama.png" alt="Pranayama">
-        <h3>Pranayama</h3>
-        <p>Técnicas de respiración consciente para regular tu energía y tu sistema nervioso.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="josefina" class="teacher">
-  <div class="container teacher-grid">
-    <div class="teacher-photo">
-      <img src="https://conexionar.com/wp-content/uploads/2025/05/prof-josefinaBW.png" alt="Profesora de yoga Josefina Fernández">
-    </div>
-    <div>
-      <h2>Josefina Fernández</h2>
-      <div>
-        <span class="credential">Sadhana Yoga</span>
-        <span class="credential">Harmonic Yoga</span>
-        <span class="credential">Fisioyoga</span>
-      </div>
-      <p class="bio">Josefina es la profesora principal de Conexionar. Su formación combina distintas escuelas de yoga con una mirada terapéutica del movimiento, para que cada clase sea segura, clara y adaptable a tu cuerpo.</p>
-      <a href="#clases" class="btn btn-outline">Conoce sus clases</a>
-    </div>
-  </div>
-</section>
-
-<section id="precios">
-  <div class="container pricing">
-    <div class="section-head">
-      <h2>Un plan simple, pensado para ti</h2>
-      <p>Empieza gratis. Cambia o cancela cuando quieras.</p>
-    </div>
-
-    <div class="toggle">
-      <button id="btnMensual" class="active" onclick="setPlan('mensual')">Mensual</button>
-      <button id="btnAnual" onclick="setPlan('anual')">Anual (ahorra 41%)</button>
-    </div>
-
-    <div class="price-cards">
-      <div class="price-card">
-        <div class="price-card-head"><h3>Plan Mensual</h3></div>
-        <div class="price-card-body">
-          <div class="price-amount">$16.990</div>
-          <div class="price-period">CLP / mes · renovación automática</div>
-          <ul>
-            <li>Acceso a las 4 líneas de clases</li>
-            <li>Prueba gratis de 7 días</li>
-            <li>Cancela cuando quieras</li>
-          </ul>
-          <a href="registro.html?plan=mensual" class="btn btn-tan">Empieza gratis</a>
-        </div>
-      </div>
-      <div class="price-card featured">
-        <span class="badge-ahorra">Ahorra 41%</span>
-        <div class="price-card-head"><h3>Plan Anual</h3></div>
-        <div class="price-card-body">
-          <div class="price-amount">$9.990</div>
-          <div class="price-period">CLP / mes, facturado como $119.880 al año</div>
-          <ul>
-            <li>Acceso a las 4 líneas de clases</li>
-            <li>Prueba gratis de 7 días</li>
-            <li>Garantía de devolución de 14 días</li>
-            <li>Pago único: funciona con débito Redcompra</li>
-          </ul>
-          <a href="registro.html?plan=anual" class="btn btn-tan">Empieza gratis</a>
-        </div>
+      <div class="precio-card destacado">
+        <div class="badge">Ahorra más</div>
+        <h3>Anual</h3>
+        <div class="monto">$119.880 <span>/ año</span></div>
+        <ul>
+          <li>Acceso a toda la biblioteca</li>
+          <li>Nuevas clases cada mes</li>
+          <li>Equivale a 2 meses gratis</li>
+        </ul>
+        <a href="registro.html?plan=anual" class="btn btn-tan">Comenzar</a>
       </div>
     </div>
   </div>
 </section>
 
-<section class="testimonials">
+<section class="cta-final">
   <div class="container">
-    <div class="section-head">
-      <h2>Lo que dicen nuestras alumnas</h2>
-    </div>
-    <div class="testimonials-grid">
-      <div class="testimonial">
-        <p class="quote">"[PLACEHOLDER — reemplazar por testimonio real de alumna, con su permiso]"</p>
-        <div class="author">— Nombre Apellido</div>
-        <span class="placeholder-tag">PLACEHOLDER</span>
-      </div>
-      <div class="testimonial">
-        <p class="quote">"[PLACEHOLDER — reemplazar por testimonio real de alumna, con su permiso]"</p>
-        <div class="author">— Nombre Apellido</div>
-        <span class="placeholder-tag">PLACEHOLDER</span>
-      </div>
-      <div class="testimonial">
-        <p class="quote">"[PLACEHOLDER — reemplazar por testimonio real de alumna, con su permiso]"</p>
-        <div class="author">— Nombre Apellido</div>
-        <span class="placeholder-tag">PLACEHOLDER</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="faq">
-  <div class="container" style="max-width:760px;">
-    <div class="section-head">
-      <h2>Preguntas frecuentes</h2>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)"><span>¿Cómo funciona la prueba gratis de 7 días?</span><span class="faq-icon">+</span></div>
-      <div class="faq-a">Te registras, eliges un plan y tienes acceso completo por 7 días sin costo. Si no cancelas antes de que termine, se activa el cobro de tu plan.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)"><span>¿Puedo cancelar cuando quiera?</span><span class="faq-icon">+</span></div>
-      <div class="faq-a">Sí. Puedes cancelar tu suscripción en cualquier momento desde tu cuenta, sin llamadas ni trámites.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)"><span>¿Qué pasa si el plan anual no me convence?</span><span class="faq-icon">+</span></div>
-      <div class="faq-a">Tienes 14 días de garantía de devolución desde tu pago, sin preguntas.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)"><span>¿En qué dispositivos puedo practicar?</span><span class="faq-icon">+</span></div>
-      <div class="faq-a">En tu computador, celular o tablet, desde el navegador. Próximamente podrás instalar Conexionar como app en tu celular.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)"><span>¿Cómo pago si solo tengo tarjeta de débito?</span><span class="faq-icon">+</span></div>
-      <div class="faq-a">El plan anual se paga con Webpay, que acepta débito Redcompra. El plan mensual requiere tarjeta de crédito para el cobro automático.</div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="cta-final">
-    <h2>Tu primera clase te espera</h2>
-    <p>Empieza tu prueba gratis de 7 días. Sin compromiso, cancela cuando quieras.</p>
-    <a href="registro.html" class="btn btn-light">Empieza tu prueba gratis</a>
+    <h2>Empieza tu práctica hoy</h2>
+    <a href="registro.html" class="btn btn-light">Crear cuenta gratis</a>
   </div>
 </section>
 
@@ -517,55 +152,23 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-        <div class="logo">
-          <img class="logo-leaves" src="https://conexionar.com/wp-content/uploads/2025/05/Logo-Oscuro-Conexionar.png" alt="Conexionar">
-        </div>
-        <p style="margin-top:14px; opacity:.75; max-width:280px;">Yoga online por suscripción para mujeres en Chile.</p>
-        <div class="footer-social">
-          <a href="https://instagram.com/conexionar" aria-label="Instagram">Instagram</a>
-        </div>
+        <span style="font-family:'Yeseva One',serif; font-size:18px;">Conexionar</span>
       </div>
-      <div>
-        <h4>Navegación</h4>
-        <a href="#como-funciona">Cómo funciona</a>
-        <a href="#clases">Clases</a>
+      <div style="display:flex; gap:20px; flex-wrap:wrap;">
+        <a href="#beneficios">Beneficios</a>
         <a href="#precios">Precios</a>
-        <a href="#faq">Preguntas</a>
-      </div>
-      <div>
-        <h4>Cuenta</h4>
         <a href="login.html">Iniciar sesión</a>
         <a href="registro.html">Crear cuenta</a>
-        <a href="https://wa.me/56900000000">WhatsApp</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>© 2026 Conexionar. Todos los derechos reservados.</span>
-      <span>Hecho con cariño en Chile 🌿</span>
-    </div>
+    <div class="footer-bottom">© 2026 Conexionar. Todos los derechos reservados.</div>
   </div>
 </footer>
 
-<a class="whatsapp-float" href="https://wa.me/56900000000" target="_blank" aria-label="Escríbenos por WhatsApp">☎</a>
-
 <script>
-  // Menú móvil
-  document.getElementById('menuToggle').addEventListener('click', function(){
-    document.getElementById('navLinks').classList.toggle('open');
+  document.getElementById("menuToggle").addEventListener("click", () => {
+    document.getElementById("navLinks").classList.toggle("open");
   });
-
-  // Toggle de precios
-  function setPlan(plan){
-    document.body.classList.toggle('show-annual', plan === 'anual');
-    document.getElementById('btnMensual').classList.toggle('active', plan === 'mensual');
-    document.getElementById('btnAnual').classList.toggle('active', plan === 'anual');
-  }
-
-  // FAQ accordion
-  function toggleFaq(el){
-    el.parentElement.classList.toggle('open');
-  }
 </script>
-
 </body>
 </html>

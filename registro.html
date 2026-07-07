@@ -1,51 +1,47 @@
 <!DOCTYPE html>
-<html lang="es-CL">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crear cuenta — Conexionar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
 <header>
-  <nav class="nav container">
+  <div class="nav container">
     <a href="index.html" class="logo">
-      <img class="logo-leaves" src="https://conexionar.com/wp-content/uploads/2025/04/Group-4.png" alt="Conexionar">
+      <span style="font-family:'Yeseva One',serif; font-size:20px; color:#fff;">Conexionar</span>
     </a>
-    <div class="nav-actions">
-      <a href="login.html" class="login">Ya tengo cuenta</a>
-    </div>
-  </nav>
+  </div>
 </header>
 
 <div class="auth-wrap">
   <div class="auth-card">
     <h1>Crea tu cuenta</h1>
-    <p class="subtitle">7 días de prueba gratis. Sin compromiso, cancela cuando quieras.</p>
+    <p class="subtitle">Empieza tu práctica hoy mismo.</p>
 
     <div id="formMsg" class="form-msg"></div>
 
     <form id="registroForm">
       <div class="field">
         <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" required autocomplete="name" placeholder="Tu nombre">
+        <input type="text" id="nombre" required autocomplete="name">
       </div>
       <div class="field">
         <label for="email">Correo electrónico</label>
-        <input type="email" id="email" required autocomplete="email" placeholder="tucorreo@ejemplo.com">
+        <input type="email" id="email" required autocomplete="email">
       </div>
       <div class="field">
         <label for="password">Contraseña</label>
-        <input type="password" id="password" required minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
+        <input type="password" id="password" required minlength="6" autocomplete="new-password">
       </div>
-      <button type="submit" class="btn btn-primary" id="submitBtn">Empieza tu prueba gratis</button>
+      <button type="submit" class="btn btn-primary" id="submitBtn">Crear cuenta</button>
     </form>
 
-    <div class="auth-switch">¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></div>
+    <p class="auth-switch">¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
   </div>
 </div>
 
@@ -53,49 +49,52 @@
 <script src="assets/config.js"></script>
 <script src="assets/supabase-client.js"></script>
 <script>
-  const form = document.getElementById('registroForm');
-  const msg = document.getElementById('formMsg');
-  const submitBtn = document.getElementById('submitBtn');
+  const form = document.getElementById("registroForm");
+  const formMsg = document.getElementById("formMsg");
+  const submitBtn = document.getElementById("submitBtn");
 
-  function showMsg(text, type) {
-    msg.textContent = text;
-    msg.className = 'form-msg ' + type;
-  }
+  // Preservamos el plan elegido en la landing (?plan=mensual / ?plan=anual)
+  // para poder usarlo más adelante si hace falta.
+  const params = new URLSearchParams(window.location.search);
+  const planElegido = params.get("plan");
+  if (planElegido) sessionStorage.setItem("plan_elegido", planElegido);
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    formMsg.className = "form-msg";
+    formMsg.textContent = "";
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Creando tu cuenta...';
-    msg.className = 'form-msg';
+    submitBtn.textContent = "Creando cuenta...";
 
-    const nombre = document.getElementById('nombre').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
+    const nombre = document.getElementById("nombre").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
     const { data, error } = await supabaseClient.auth.signUp({
       email,
       password,
-      options: { data: { full_name: nombre } }
+      options: { data: { full_name: nombre } },
     });
 
     if (error) {
-      showMsg('No pudimos crear tu cuenta: ' + error.message, 'error');
+      formMsg.className = "form-msg error";
+      formMsg.textContent = "No pudimos crear tu cuenta: " + error.message;
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Empieza tu prueba gratis';
+      submitBtn.textContent = "Crear cuenta";
       return;
     }
 
-    // Si Supabase tiene "Confirm email" activado, no hay sesión todavía.
     if (!data.session) {
-      showMsg('¡Listo! Te enviamos un correo para confirmar tu cuenta. Revisa tu bandeja de entrada (y spam).', 'success');
-      submitBtn.textContent = 'Revisa tu correo';
+      formMsg.className = "form-msg success";
+      formMsg.textContent = "¡Listo! Te enviamos un correo de confirmación. Revisa tu bandeja de entrada para activar tu cuenta.";
+      form.reset();
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Crear cuenta";
       return;
     }
 
-    // Si no requiere confirmación, entra directo a la biblioteca.
-    window.location.href = 'app.html';
+    window.location.href = "app.html";
   });
 </script>
-
 </body>
 </html>

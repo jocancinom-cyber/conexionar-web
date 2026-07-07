@@ -1,0 +1,9 @@
+{
+  "name": "conexionar-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sitio de Conexionar (estático) + funciones serverless de pago en /api",
+  "dependencies": {
+    "transbank-sdk": "^6.1.1"
+  }
+}

@@ -1,191 +1,267 @@
 <!DOCTYPE html>
-<html lang="es-CL">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mi biblioteca — Conexionar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
 <header>
-  <nav class="nav container">
+  <div class="nav container">
     <a href="app.html" class="logo">
-      <img class="logo-leaves" src="https://conexionar.com/wp-content/uploads/2025/04/Group-4.png" alt="Conexionar">
+      <span style="font-family:'Yeseva One',serif; font-size:20px; color:#fff;">Conexionar</span>
     </a>
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button>
-    <div class="nav-links" id="navLinks">
+    <nav class="nav-links" id="navLinks">
       <a href="app.html">Biblioteca</a>
-    </div>
+    </nav>
     <div class="nav-actions">
       <a href="#" id="logoutBtn" class="login">Cerrar sesión</a>
     </div>
-  </nav>
+  </div>
 </header>
 
 <div class="library-header">
   <div class="container">
-    <h1 id="saludo">Hola 🌿</h1>
+    <h1 id="saludo">Hola 👋</h1>
     <p id="estadoMembresia"></p>
   </div>
 </div>
 
-<div id="lockedBanner" class="container" style="display:none; padding-top:24px;">
-  <div class="locked" style="background:#FBEAE8; border-radius:16px;">
-    <h3>Tu prueba gratis terminó</h3>
-    <p>Elige un plan para seguir practicando sin límites.</p>
-    <a href="index.html#precios" class="btn btn-primary">Ver planes</a>
-  </div>
-</div>
-
-<div class="container" id="continueSection" style="display:none;">
-  <div class="continue-watching">
-    <h2 style="font-size:20px; margin-bottom:14px;">Continúa donde quedaste</h2>
-    <div id="continueList"></div>
-  </div>
-</div>
-
 <div class="container">
+
+  <div id="lockedBanner"></div>
+
+  <div id="pagoMsg"></div>
+
+  <div id="continueSection" style="display:none;">
+    <div class="continue-watching">
+      <h2 style="font-size:20px; margin-bottom:14px;">Continúa donde quedaste</h2>
+      <div id="continueCard"></div>
+    </div>
+  </div>
+
   <div class="filters">
-    <select id="filterTipo">
+    <select id="filtroTipo">
       <option value="">Todos los tipos</option>
-      <option value="alineamiento">Alineamiento</option>
-      <option value="harmonic">Harmonic</option>
+      <option value="yoga">Yoga</option>
       <option value="meditacion">Meditación</option>
       <option value="pranayama">Pranayama</option>
     </select>
-    <select id="filterNivel">
+    <select id="filtroNivel">
       <option value="">Todos los niveles</option>
       <option value="principiante">Principiante</option>
       <option value="intermedio">Intermedio</option>
       <option value="avanzado">Avanzado</option>
-      <option value="todo_nivel">Todo nivel</option>
     </select>
   </div>
 
   <div id="classGrid" class="class-grid">
-    <div class="loading">Cargando clases...</div>
+    <p style="grid-column:1/-1; text-align:center; color:var(--texto-secundario); padding:40px 0;">Cargando clases...</p>
   </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/config.js"></script>
 <script src="assets/supabase-client.js"></script>
 <script>
-  let allClasses = [];
-  let currentUser = null;
+  const TIPO_LABEL = { yoga: "Yoga", meditacion: "Meditación", pranayama: "Pranayama" };
+  const NIVEL_LABEL = { principiante: "Principiante", intermedio: "Intermedio", avanzado: "Avanzado" };
 
-  document.getElementById('menuToggle').addEventListener('click', () => {
-    document.getElementById('navLinks').classList.toggle('open');
-  });
-  document.getElementById('logoutBtn').addEventListener('click', (e) => {
-    e.preventDefault();
-    signOut();
-  });
+  let todasLasClases = [];
+  let perfilActual = null;
 
-  const TIPO_LABEL = { alineamiento: 'Alineamiento', harmonic: 'Harmonic', meditacion: 'Meditación', pranayama: 'Pranayama' };
+  function mostrarMensajePago() {
+    const params = new URLSearchParams(window.location.search);
+    const pago = params.get("pago");
+    if (!pago) return;
 
-  function renderGrid() {
-    const tipo = document.getElementById('filterTipo').value;
-    const nivel = document.getElementById('filterNivel').value;
-    const grid = document.getElementById('classGrid');
+    const mensajes = {
+      exito: "¡Listo! Tu pago se procesó correctamente y tu membresía ya está activa. 🎉",
+      rechazado: "Tu pago fue rechazado. Puedes intentarlo de nuevo cuando quieras.",
+      error: "Ocurrió un error procesando tu pago. Si el problema persiste, escríbenos.",
+      cancelado: "Cancelaste el proceso de pago.",
+    };
+    const clase = pago === "exito" ? "exito" : "error";
+    const texto = mensajes[pago] || null;
+    if (!texto) return;
 
-    const filtered = allClasses.filter(c =>
-      (!tipo || c.type === tipo) && (!nivel || c.level === nivel)
-    );
+    const div = document.getElementById("pagoMsg");
+    div.innerHTML = `<div class="pago-msg ${clase}">${texto}</div>`;
 
-    if (filtered.length === 0) {
-      grid.innerHTML = '<div class="empty-state">Todavía no hay clases publicadas con este filtro.<br>Si eres María José: agrega clases desde el Table Editor de Supabase, tabla <b>classes</b>.</div>';
-      return;
-    }
-
-    grid.innerHTML = filtered.map(c => `
-      <a class="class-tile" href="clase.html?id=${c.id}">
-        <div class="thumb">
-          ${c.thumbnail_url ? `<img src="${c.thumbnail_url}" alt="${c.title}">` : ''}
-          <span class="duration">${c.duration_minutes} min</span>
-        </div>
-        <div class="body">
-          <span class="type-tag">${TIPO_LABEL[c.type] || c.type}</span>
-          <h3>${c.title}</h3>
-          <div class="meta">${c.instructor || 'Josefina Fernández'}</div>
-        </div>
-      </a>
-    `).join('');
+    // Limpiamos el parámetro de la URL para que no se repita al recargar.
+    params.delete("pago");
+    const nuevaUrl = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+    window.history.replaceState({}, "", nuevaUrl);
   }
 
-  async function loadContinueWatching(userId) {
+  function renderSubscribeBanner() {
+    const lockedBanner = document.getElementById("lockedBanner");
+    lockedBanner.innerHTML = `
+      <div class="subscribe-banner">
+        <div class="text">
+          <h3>Activa tu membresía</h3>
+          <p>Elige un plan para acceder a toda la biblioteca de clases.</p>
+        </div>
+        <div class="subscribe-actions">
+          <button class="btn btn-primary" id="btnMensual">Mensual — $16.990/mes</button>
+          <button class="btn btn-tan" id="btnAnual">Anual — $119.880/año</button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("btnMensual").addEventListener("click", (e) => iniciarPago(e.target, "/api/crear-suscripcion-mensual"));
+    document.getElementById("btnAnual").addEventListener("click", (e) => iniciarPago(e.target, "/api/crear-pago-anual"));
+  }
+
+  async function iniciarPago(boton, endpoint) {
+    boton.disabled = true;
+    const textoOriginal = boton.textContent;
+    boton.textContent = "Redirigiendo...";
+
+    try {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || "No pudimos iniciar el pago.");
+      }
+
+      window.location.href = data.url;
+    } catch (err) {
+      console.error(err);
+      alert("Ocurrió un problema iniciando el pago. Intenta de nuevo en unos minutos.");
+      boton.disabled = false;
+      boton.textContent = textoOriginal;
+    }
+  }
+
+  function renderClassGrid(clases) {
+    const grid = document.getElementById("classGrid");
+    if (clases.length === 0) {
+      grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:var(--texto-secundario); padding:40px 0;">No hay clases que coincidan con estos filtros.</p>`;
+      return;
+    }
+    grid.innerHTML = clases.map((c) => `
+      <a href="clase.html?id=${c.id}" class="class-tile">
+        <div class="thumb">
+          ${c.thumbnail_url ? `<img src="${c.thumbnail_url}" alt="${c.title}">` : ""}
+          ${c.duration_minutes ? `<span class="duration">${c.duration_minutes} min</span>` : ""}
+        </div>
+        <div class="body">
+          <span class="type-tag">${TIPO_LABEL[c.class_type] || c.class_type}</span>
+          <h3>${c.title}</h3>
+          <div class="meta">${NIVEL_LABEL[c.level] || c.level || ""}</div>
+        </div>
+      </a>
+    `).join("");
+  }
+
+  function aplicarFiltros() {
+    const tipo = document.getElementById("filtroTipo").value;
+    const nivel = document.getElementById("filtroNivel").value;
+    let filtradas = todasLasClases;
+    if (tipo) filtradas = filtradas.filter((c) => c.class_type === tipo);
+    if (nivel) filtradas = filtradas.filter((c) => c.level === nivel);
+    renderClassGrid(filtradas);
+  }
+
+  document.getElementById("filtroTipo").addEventListener("change", aplicarFiltros);
+  document.getElementById("filtroNivel").addEventListener("change", aplicarFiltros);
+  document.getElementById("logoutBtn").addEventListener("click", (e) => { e.preventDefault(); signOut(); });
+
+  async function cargarContinuar(userId, acceso) {
+    if (!acceso) return;
     const { data, error } = await supabaseClient
-      .from('progress')
-      .select('class_id, seconds_watched, duration_seconds, last_watched_at, classes(title, thumbnail_url)')
-      .eq('user_id', userId)
-      .eq('completed', false)
-      .order('last_watched_at', { ascending: false })
-      .limit(3);
+      .from("progress")
+      .select("*, classes(id, title, thumbnail_url, class_type)")
+      .eq("user_id", userId)
+      .eq("completed", false)
+      .order("updated_at", { ascending: false })
+      .limit(1);
 
     if (error || !data || data.length === 0) return;
 
-    document.getElementById('continueSection').style.display = 'block';
-    document.getElementById('continueList').innerHTML = data.map(p => {
-      const pct = p.duration_seconds ? Math.min(100, Math.round((p.seconds_watched / p.duration_seconds) * 100)) : 0;
-      const title = p.classes ? p.classes.title : 'Clase';
-      const thumb = p.classes ? p.classes.thumbnail_url : '';
-      return `
-        <a class="continue-card" href="clase.html?id=${p.class_id}">
-          <div class="thumb">${thumb ? `<img src="${thumb}" alt="${title}">` : ''}</div>
-          <div class="info">
-            <div style="font-weight:700;">${title}</div>
-            <div class="progress-bar"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
-          </div>
-        </a>`;
-    }).join('');
+    const p = data[0];
+    const c = p.classes;
+    if (!c) return;
+
+    const pct = p.progress_seconds && p.duration_seconds
+      ? Math.min(100, Math.round((p.progress_seconds / p.duration_seconds) * 100))
+      : 0;
+
+    document.getElementById("continueSection").style.display = "block";
+    document.getElementById("continueCard").innerHTML = `
+      <a href="clase.html?id=${c.id}" class="continue-card">
+        <div class="thumb">${c.thumbnail_url ? `<img src="${c.thumbnail_url}" alt="">` : ""}</div>
+        <div class="info">
+          <strong>${c.title}</strong>
+          <div class="progress-bar"><div class="progress-bar-fill" style="width:${pct}%;"></div></div>
+        </div>
+      </a>
+    `;
   }
 
   async function init() {
-    currentUser = await requireAuth();
-    if (!currentUser) return;
+    mostrarMensajePago();
 
-    const profile = await getProfile(currentUser.id);
-    document.getElementById('saludo').textContent = `Hola${profile?.full_name ? ', ' + profile.full_name.split(' ')[0] : ''} 🌿`;
+    const user = await requireAuth();
+    if (!user) return;
 
-    const active = hasActiveAccess(profile);
-    if (profile?.membership_status === 'trial' && active) {
-      const dias = Math.ceil((new Date(profile.trial_ends_at) - new Date()) / 86400000);
-      document.getElementById('estadoMembresia').textContent = `Te quedan ${dias} día(s) de prueba gratis.`;
-    } else if (profile?.membership_status === 'activo') {
-      document.getElementById('estadoMembresia').textContent = 'Suscripción activa. ¡Buena práctica!';
+    perfilActual = await getProfile(user.id);
+    const nombre = (perfilActual && perfilActual.full_name) || user.email;
+    document.getElementById("saludo").textContent = `Hola, ${nombre.split(" ")[0]} 👋`;
+
+    const acceso = hasActiveAccess(perfilActual);
+
+    if (perfilActual && perfilActual.membership_status === "trial" && acceso) {
+      const dias = trialDaysRemaining(perfilActual);
+      document.getElementById("estadoMembresia").textContent = `Te quedan ${dias} día(s) de prueba gratuita.`;
+    } else if (acceso) {
+      document.getElementById("estadoMembresia").textContent = `Membresía activa — plan ${perfilActual.plan || ""}.`;
     } else {
-      document.getElementById('estadoMembresia').textContent = '';
+      document.getElementById("estadoMembresia").textContent = "Tu prueba gratuita terminó.";
     }
 
-    if (!active) {
-      document.getElementById('lockedBanner').style.display = 'block';
-    } else {
-      loadContinueWatching(currentUser.id);
+    if (!acceso) {
+      renderSubscribeBanner();
     }
 
-    const { data, error } = await supabaseClient
-      .from('classes')
-      .select('*')
-      .eq('published', true)
-      .order('order_index', { ascending: true });
+    await cargarContinuar(user.id, acceso);
+
+    const { data: clases, error } = await supabaseClient
+      .from("classes")
+      .select("*")
+      .eq("published", true)
+      .order("order_index", { ascending: true });
 
     if (error) {
-      document.getElementById('classGrid').innerHTML = '<div class="empty-state">Error cargando el catálogo: ' + error.message + '</div>';
+      console.error(error);
+      document.getElementById("classGrid").innerHTML = `<p style="grid-column:1/-1; text-align:center; color:var(--texto-secundario); padding:40px 0;">No pudimos cargar las clases.</p>`;
       return;
     }
-    allClasses = data || [];
-    renderGrid();
-  }
 
-  document.getElementById('filterTipo').addEventListener('change', renderGrid);
-  document.getElementById('filterNivel').addEventListener('change', renderGrid);
+    todasLasClases = clases || [];
+    renderClassGrid(todasLasClases);
+  }
 
   init();
 </script>
-
 </body>
 </html>
