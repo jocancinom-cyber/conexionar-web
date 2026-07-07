@@ -145,6 +145,23 @@
         throw new Error(data.error || "No pudimos iniciar el pago.");
       }
 
+      // Webpay (Transbank) no acepta una simple redirección GET: hay que
+      // enviar el token mediante un formulario POST. MercadoPago sí acepta
+      // redirección directa a su init_point.
+      if (endpoint === "/api/crear-pago-anual" && data.token) {
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = data.url;
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "token_ws";
+        input.value = data.token;
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+        return;
+      }
+
       window.location.href = data.url;
     } catch (err) {
       console.error(err);
