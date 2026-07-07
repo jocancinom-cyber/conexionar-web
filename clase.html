@@ -37,8 +37,8 @@
 <script src="assets/config.js"></script>
 <script src="assets/supabase-client.js"></script>
 <script>
-  const TIPO_LABEL = { yoga: "Yoga", meditacion: "Meditación", pranayama: "Pranayama" };
-  const NIVEL_LABEL = { principiante: "Principiante", intermedio: "Intermedio", avanzado: "Avanzado" };
+  const TIPO_LABEL = { alineamiento: "Alineamiento", harmonic: "Harmonic", meditacion: "Meditación", pranayama: "Pranayama" };
+  const NIVEL_LABEL = { principiante: "Principiante", intermedio: "Intermedio", avanzado: "Avanzado", todo_nivel: "Todo nivel" };
 
   document.getElementById("logoutBtn").addEventListener("click", (e) => { e.preventDefault(); signOut(); });
 
@@ -79,10 +79,10 @@
     await supabaseClient.from("progress").upsert({
       user_id: userIdActual,
       class_id: claseIdActual,
-      progress_seconds: Math.round(segundos),
+      seconds_watched: Math.round(segundos),
       duration_seconds: Math.round(duracionTotalSeg) || null,
       completed: !!completado,
-      updated_at: new Date().toISOString(),
+      last_watched_at: new Date().toISOString(),
     }, { onConflict: "user_id,class_id" });
   }
 
@@ -97,7 +97,7 @@
         </div>
       </div>
       <div class="container player-info">
-        <span class="type-tag">${TIPO_LABEL[clase.class_type] || clase.class_type}</span>
+        <span class="type-tag">${TIPO_LABEL[clase.type] || clase.type}</span>
         <h1>${clase.title}</h1>
         <div class="player-meta">
           ${clase.level ? `<span>${NIVEL_LABEL[clase.level] || clase.level}</span>` : ""}

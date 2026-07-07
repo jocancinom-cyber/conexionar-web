@@ -47,7 +47,8 @@
   <div class="filters">
     <select id="filtroTipo">
       <option value="">Todos los tipos</option>
-      <option value="yoga">Yoga</option>
+      <option value="alineamiento">Alineamiento</option>
+      <option value="harmonic">Harmonic</option>
       <option value="meditacion">Meditación</option>
       <option value="pranayama">Pranayama</option>
     </select>
@@ -56,6 +57,7 @@
       <option value="principiante">Principiante</option>
       <option value="intermedio">Intermedio</option>
       <option value="avanzado">Avanzado</option>
+      <option value="todo_nivel">Todo nivel</option>
     </select>
   </div>
 
@@ -69,8 +71,8 @@
 <script src="assets/config.js"></script>
 <script src="assets/supabase-client.js"></script>
 <script>
-  const TIPO_LABEL = { yoga: "Yoga", meditacion: "Meditación", pranayama: "Pranayama" };
-  const NIVEL_LABEL = { principiante: "Principiante", intermedio: "Intermedio", avanzado: "Avanzado" };
+  const TIPO_LABEL = { alineamiento: "Alineamiento", harmonic: "Harmonic", meditacion: "Meditación", pranayama: "Pranayama" };
+  const NIVEL_LABEL = { principiante: "Principiante", intermedio: "Intermedio", avanzado: "Avanzado", todo_nivel: "Todo nivel" };
 
   let todasLasClases = [];
   let perfilActual = null;
@@ -165,7 +167,7 @@
           ${c.duration_minutes ? `<span class="duration">${c.duration_minutes} min</span>` : ""}
         </div>
         <div class="body">
-          <span class="type-tag">${TIPO_LABEL[c.class_type] || c.class_type}</span>
+          <span class="type-tag">${TIPO_LABEL[c.type] || c.type}</span>
           <h3>${c.title}</h3>
           <div class="meta">${NIVEL_LABEL[c.level] || c.level || ""}</div>
         </div>
@@ -177,7 +179,7 @@
     const tipo = document.getElementById("filtroTipo").value;
     const nivel = document.getElementById("filtroNivel").value;
     let filtradas = todasLasClases;
-    if (tipo) filtradas = filtradas.filter((c) => c.class_type === tipo);
+    if (tipo) filtradas = filtradas.filter((c) => c.type === tipo);
     if (nivel) filtradas = filtradas.filter((c) => c.level === nivel);
     renderClassGrid(filtradas);
   }
@@ -190,10 +192,10 @@
     if (!acceso) return;
     const { data, error } = await supabaseClient
       .from("progress")
-      .select("*, classes(id, title, thumbnail_url, class_type)")
+      .select("*, classes(id, title, thumbnail_url, type)")
       .eq("user_id", userId)
       .eq("completed", false)
-      .order("updated_at", { ascending: false })
+      .order("last_watched_at", { ascending: false })
       .limit(1);
 
     if (error || !data || data.length === 0) return;
@@ -202,8 +204,8 @@
     const c = p.classes;
     if (!c) return;
 
-    const pct = p.progress_seconds && p.duration_seconds
-      ? Math.min(100, Math.round((p.progress_seconds / p.duration_seconds) * 100))
+    const pct = p.seconds_watched && p.duration_seconds
+      ? Math.min(100, Math.round((p.seconds_watched / p.duration_seconds) * 100))
       : 0;
 
     document.getElementById("continueSection").style.display = "block";
