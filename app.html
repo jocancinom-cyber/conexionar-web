@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi biblioteca — Conexionar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header>
+  <nav class="nav container">
+    <a href="app.html" class="logo">
+      <img class="logo-leaves" src="https://conexionar.com/wp-content/uploads/2025/04/Group-4.png" alt="Conexionar">
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="app.html">Biblioteca</a>
+    </div>
+    <div class="nav-actions">
+      <a href="#" id="logoutBtn" class="login">Cerrar sesión</a>
+    </div>
+  </nav>
+</header>
+
+<div class="library-header">
+  <div class="container">
+    <h1 id="saludo">Hola 🌿</h1>
+    <p id="estadoMembresia"></p>
+  </div>
+</div>
+
+<div id="lockedBanner" class="container" style="display:none; padding-top:24px;">
+  <div class="locked" style="background:#FBEAE8; border-radius:16px;">
+    <h3>Tu prueba gratis terminó</h3>
+    <p>Elige un plan para seguir practicando sin límites.</p>
+    <a href="index.html#precios" class="btn btn-primary">Ver planes</a>
+  </div>
+</div>
+
+<div class="container" id="continueSection" style="display:none;">
+  <div class="continue-watching">
+    <h2 style="font-size:20px; margin-bottom:14px;">Continúa donde quedaste</h2>
+    <div id="continueList"></div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="filters">
+    <select id="filterTipo">
+      <option value="">Todos los tipos</option>
+      <option value="alineamiento">Alineamiento</option>
+      <option value="harmonic">Harmonic</option>
+      <option value="meditacion">Meditación</option>
+      <option value="pranayama">Pranayama</option>
+    </select>
+    <select id="filterNivel">
+      <option value="">Todos los niveles</option>
+      <option value="principiante">Principiante</option>
+      <option value="intermedio">Intermedio</option>
+      <option value="avanzado">Avanzado</option>
+      <option value="todo_nivel">Todo nivel</option>
+    </select>
+  </div>
+
+  <div id="classGrid" class="class-grid">
+    <div class="loading">Cargando clases...</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/supabase-client.js"></script>
+<script>
+  let allClasses = [];
+  let currentUser = null;
+
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    signOut();
+  });
+
+  const TIPO_LABEL = { alineamiento: 'Alineamiento', harmonic: 'Harmonic', meditacion: 'Meditación', pranayama: 'Pranayama' };
+
+  function renderGrid() {
+    const tipo = document.getElementById('filterTipo').value;
+    const nivel = document.getElementById('filterNivel').value;
+    const grid = document.getElementById('classGrid');
+
+    const filtered = allClasses.filter(c =>
+      (!tipo || c.type === tipo) && (!nivel || c.level === nivel)
+    );
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="empty-state">Todavía no hay clases publicadas con este filtro.<br>Si eres María José: agrega clases desde el Table Editor de Supabase, tabla <b>classes</b>.</div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(c => `
+      <a class="class-tile" href="clase.html?id=${c.id}">
+        <div class="thumb">
+          ${c.thumbnail_url ? `<img src="${c.thumbnail_url}" alt="${c.title}">` : ''}
+          <span class="duration">${c.duration_minutes} min</span>
+        </div>
+        <div class="body">
+          <span class="type-tag">${TIPO_LABEL[c.type] || c.type}</span>
+          <h3>${c.title}</h3>
+          <div class="meta">${c.instructor || 'Josefina Fernández'}</div>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  async function loadContinueWatching(userId) {
+    const { data, error } = await supabaseClient
+      .from('progress')
+      .select('class_id, seconds_watched, duration_seconds, last_watched_at, classes(title, thumbnail_url)')
+      .eq('user_id', userId)
+      .eq('completed', false)
+      .order('last_watched_at', { ascending: false })
+      .limit(3);
+
+    if (error || !data || data.length === 0) return;
+
+    document.getElementById('continueSection').style.display = 'block';
+    document.getElementById('continueList').innerHTML = data.map(p => {
+      const pct = p.duration_seconds ? Math.min(100, Math.round((p.seconds_watched / p.duration_seconds) * 100)) : 0;
+      const title = p.classes ? p.classes.title : 'Clase';
+      const thumb = p.classes ? p.classes.thumbnail_url : '';
+      return `
+        <a class="continue-card" href="clase.html?id=${p.class_id}">
+          <div class="thumb">${thumb ? `<img src="${thumb}" alt="${title}">` : ''}</div>
+          <div class="info">
+            <div style="font-weight:700;">${title}</div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+          </div>
+        </a>`;
+    }).join('');
+  }
+
+  async function init() {
+    currentUser = await requireAuth();
+    if (!currentUser) return;
+
+    const profile = await getProfile(currentUser.id);
+    document.getElementById('saludo').textContent = `Hola${profile?.full_name ? ', ' + profile.full_name.split(' ')[0] : ''} 🌿`;
+
+    const active = hasActiveAccess(profile);
+    if (profile?.membership_status === 'trial' && active) {
+      const dias = Math.ceil((new Date(profile.trial_ends_at) - new Date()) / 86400000);
+      document.getElementById('estadoMembresia').textContent = `Te quedan ${dias} día(s) de prueba gratis.`;
+    } else if (profile?.membership_status === 'activo') {
+      document.getElementById('estadoMembresia').textContent = 'Suscripción activa. ¡Buena práctica!';
+    } else {
+      document.getElementById('estadoMembresia').textContent = '';
+    }
+
+    if (!active) {
+      document.getElementById('lockedBanner').style.display = 'block';
+    } else {
+      loadContinueWatching(currentUser.id);
+    }
+
+    const { data, error } = await supabaseClient
+      .from('classes')
+      .select('*')
+      .eq('published', true)
+      .order('order_index', { ascending: true });
+
+    if (error) {
+      document.getElementById('classGrid').innerHTML = '<div class="empty-state">Error cargando el catálogo: ' + error.message + '</div>';
+      return;
+    }
+    allClasses = data || [];
+    renderGrid();
+  }
+
+  document.getElementById('filterTipo').addEventListener('change', renderGrid);
+  document.getElementById('filterNivel').addEventListener('change', renderGrid);
+
+  init();
+</script>
+
+</body>
+</html>

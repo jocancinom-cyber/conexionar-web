@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase — Conexionar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header>
+  <nav class="nav container">
+    <a href="app.html" class="logo">
+      <img class="logo-leaves" src="https://conexionar.com/wp-content/uploads/2025/04/Group-4.png" alt="Conexionar">
+    </a>
+    <div class="nav-actions">
+      <a href="#" id="logoutBtn" class="login">Cerrar sesión</a>
+    </div>
+  </nav>
+</header>
+
+<div id="content">
+  <div class="loading">Cargando clase...</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/supabase-client.js"></script>
+<script>
+  document.getElementById('logoutBtn').addEventListener('click', (e) => { e.preventDefault(); signOut(); });
+
+  const TIPO_LABEL = { alineamiento: 'Alineamiento', harmonic: 'Harmonic', meditacion: 'Meditación', pranayama: 'Pranayama' };
+  const params = new URLSearchParams(window.location.search);
+  const classId = params.get('id');
+  let currentUser = null;
+  let vimeoPlayer = null;
+  let lastSaved = 0;
+
+  function renderLocked(clase) {
+    document.getElementById('content').innerHTML = `
+      <div class="container">
+        <a href="app.html" class="back-link">← Volver a la biblioteca</a>
+        <div class="locked" style="background:#fff; border-radius:16px; border:1px solid var(--taupe-claro);">
+          <h3>${clase ? clase.title : 'Esta clase'} es solo para miembros</h3>
+          <p>Tu prueba gratis terminó o aún no tienes un plan activo.</p>
+          <a href="index.html#precios" class="btn btn-primary">Ver planes</a>
+        </div>
+      </div>`;
+  }
+
+  function renderNotFound() {
+    document.getElementById('content').innerHTML = `
+      <div class="container">
+        <div class="locked">
+          <h3>No encontramos esta clase</h3>
+          <a href="app.html" class="btn btn-outline">Volver a la biblioteca</a>
+        </div>
+      </div>`;
+  }
+
+  async function saveProgress(seconds, duration, completed) {
+    if (!currentUser || !classId) return;
+    await supabaseClient.from('progress').upsert({
+      user_id: currentUser.id,
+      class_id: classId,
+      seconds_watched: Math.floor(seconds),
+      duration_seconds: Math.floor(duration),
+      completed: completed,
+      last_watched_at: new Date().toISOString()
+    }, { onConflict: 'user_id,class_id' });
+  }
+
+  async function renderPlayer(clase, video, initialProgress) {
+    document.getElementById('content').innerHTML = `
+      <div class="player-wrap">
+        <div class="player-frame">
+          <iframe id="vimeoIframe"
+            src="https://player.vimeo.com/video/${video.vimeo_id}${video.vimeo_hash ? '?h=' + video.vimeo_hash : ''}"
+            allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="${clase.title}"></iframe>
+        </div>
+      </div>
+      <div class="container player-info">
+        <a href="app.html" class="back-link">← Volver a la biblioteca</a>
+        <h1>${clase.title}</h1>
+        <div class="player-meta">
+          <span class="type-tag" style="background:var(--hueso); padding:4px 12px; border-radius:999px; font-size:12px; font-weight:700; color:var(--taupe-oscuro);">${TIPO_LABEL[clase.type] || clase.type}</span>
+          <span style="color:var(--texto-secundario); font-size:14px;">${clase.duration_minutes} min · ${clase.instructor || 'Josefina Fernández'}</span>
+        </div>
+        <p>${clase.description || ''}</p>
+      </div>`;
+
+    const iframe = document.getElementById('vimeoIframe');
+    vimeoPlayer = new Vimeo.Player(iframe);
+
+    if (initialProgress && initialProgress.seconds_watched > 5 && !initialProgress.completed) {
+      vimeoPlayer.setCurrentTime(initialProgress.seconds_watched).catch(() => {});
+    }
+
+    vimeoPlayer.on('timeupdate', (data) => {
+      // Guarda cada ~10 segundos de reproducción, no en cada tick.
+      if (data.seconds - lastSaved >= 10) {
+        lastSaved = data.seconds;
+        const completed = data.percent >= 0.9;
+        saveProgress(data.seconds, data.duration, completed);
+      }
+    });
+
+    vimeoPlayer.on('ended', () => {
+      saveProgress(vimeoPlayer ? lastSaved : 0, 0, true);
+    });
+  }
+
+  async function init() {
+    currentUser = await requireAuth();
+    if (!currentUser) return;
+    if (!classId) { renderNotFound(); return; }
+
+    const { data: clase, error: claseError } = await supabaseClient
+      .from('classes').select('*').eq('id', classId).single();
+
+    if (claseError || !clase) { renderNotFound(); return; }
+
+    const { data: video, error: videoError } = await supabaseClient
+      .from('class_videos').select('*').eq('class_id', classId).maybeSingle();
+
+    // Si la RLS bloquea el acceso (no es miembro activo y la clase no es muestra), video vendrá vacío.
+    if (videoError || !video) { renderLocked(clase); return; }
+
+    const { data: progress } = await supabaseClient
+      .from('progress').select('*').eq('user_id', currentUser.id).eq('class_id', classId).maybeSingle();
+
+    renderPlayer(clase, video, progress);
+  }
+
+  init();
+</script>
+
+</body>
+</html>
