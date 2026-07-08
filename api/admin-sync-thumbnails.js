@@ -13,6 +13,8 @@
 // =====================================================================
 const { getAllClassVideos, updateClassThumbnail } = require("../lib/supabase-admin");
 
+const SITE_URL = process.env.SITE_URL || "https://nuevo.conexionar.com";
+
 module.exports = async (req, res) => {
   try {
     const videos = await getAllClassVideos();
@@ -25,7 +27,8 @@ module.exports = async (req, res) => {
     for (const v of videos) {
       try {
         const oembedRes = await fetch(
-          `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(`https://vimeo.com/${v.vimeo_id}`)}&width=640`
+          `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(`https://vimeo.com/${v.vimeo_id}`)}&width=640`,
+          { headers: { Referer: SITE_URL, Origin: SITE_URL } }
         );
         if (!oembedRes.ok) {
           resultados.push({ class_id: v.class_id, vimeo_id: v.vimeo_id, ok: false, error: `oEmbed ${oembedRes.status}` });
@@ -33,7 +36,7 @@ module.exports = async (req, res) => {
         }
         const oembed = await oembedRes.json();
         if (!oembed.thumbnail_url) {
-          resultados.push({ class_id: v.class_id, vimeo_id: v.vimeo_id, ok: false, error: "sin thumbnail_url" });
+          resultados.push({ class_id: v.class_id, vimeo_id: v.vimeo_id, ok: false, error: "sin thumbnail_url", detalle: oembed });
           continue;
         }
         await updateClassThumbnail(v.class_id, oembed.thumbnail_url);
