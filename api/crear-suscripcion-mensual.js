@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
         reason: "Conexionar — Plan Mensual",
         external_reference: user.id,
         payer_email: user.email,
-        back_url: `${SITE_URL}/app.html?pago=exito`,
+        back_url: `${SITE_URL}/api/confirmar-mercadopago`,
         auto_recurring: {
           frequency: 1,
           frequency_type: "months",
