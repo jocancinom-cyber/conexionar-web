@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Conexionar — Yoga online para mujeres en Chile</title>
-<meta name="description" content="Clases de yoga online por suscripción: Alineamiento, Harmonic, Meditación y Pranayama con la profesora Josefina Fernández. Prueba gratis 7 días.">
+<meta name="description" content="Clases de yoga online por suscripción: Alineamiento, Harmonic, Meditación y Pranayama con Emma Marín, Josefina Fernández y Harish Morán. Prueba gratis 7 días.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Quicksand:wght@400;500;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
@@ -66,8 +66,16 @@
     padding:16px 24px;
   }
   .logo{display:flex; align-items:center; gap:8px;}
-  .logo-leaves{height:28px; width:auto; flex-shrink:0;}
-  .footer-grid .logo-leaves{height:24px;}
+  .logo-text{
+    font-family:'Yeseva One', serif;
+    font-size:24px;
+    color:var(--blanco);
+    letter-spacing:.3px;
+  }
+  .footer-grid .logo-text{
+    font-size:22px;
+    color:var(--texto);
+  }
   .nav-links{display:flex; align-items:center; gap:32px;}
   .nav-links a{font-weight:700; font-size:15px; color:var(--blanco);}
   .nav-links a:hover{opacity:.8;}
@@ -170,25 +178,26 @@
   @media (max-width:900px){.classes-grid{grid-template-columns:repeat(2,1fr);}}
   @media (max-width:520px){.classes-grid{grid-template-columns:1fr;}}
 
-  /* ---------- Josefina ---------- */
+  /* ---------- Guías (profesoras) ---------- */
   .teacher{background:var(--blanco);}
-  .teacher-grid{
-    display:grid; grid-template-columns:0.8fr 1.2fr; gap:48px; align-items:center;
+  .guides-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:32px;
   }
-  .teacher-photo{
+  .guide-card{text-align:left;}
+  .guide-photo{
     aspect-ratio:4/5; border-radius:var(--radius);
     background:var(--taupe-claro);
-    overflow:hidden;
+    overflow:hidden; margin-bottom:20px;
   }
-  .teacher-photo img{width:100%; height:100%; object-fit:cover; display:block;}
-  .teacher h2{font-size:30px; margin-bottom:16px;}
-  .teacher .credential{
+  .guide-photo img{width:100%; height:100%; object-fit:cover; display:block;}
+  .guide-card h3{font-size:22px; margin-bottom:10px;}
+  .guide-card .credential{
     display:inline-block; background:var(--hueso); color:var(--taupe-oscuro);
-    padding:6px 12px; border-radius:999px; font-size:13px; font-weight:700;
-    margin:4px 8px 4px 0;
+    padding:5px 11px; border-radius:999px; font-size:12.5px; font-weight:700;
+    margin:4px 6px 4px 0;
   }
-  .teacher p.bio{margin:20px 0; opacity:.85;}
-  @media (max-width:860px){.teacher-grid{grid-template-columns:1fr;}}
+  .guide-card p.bio{margin:14px 0 16px; opacity:.85; font-size:14.5px;}
+  @media (max-width:900px){.guides-grid{grid-template-columns:1fr; max-width:420px; margin:0 auto;}}
 
   /* ---------- Precios ---------- */
   .pricing{text-align:center;}
@@ -284,13 +293,13 @@
 <header>
   <nav class="nav container">
     <a href="#" class="logo">
-      <img class="logo-leaves" src="https://conexionar.com/wp-content/uploads/2025/04/Group-4.png" alt="Conexionar">
+      <span class="logo-text">Conexionar</span>
     </a>
     <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button>
     <div class="nav-links" id="navLinks">
       <a href="#como-funciona">Cómo funciona</a>
       <a href="#clases">Clases</a>
-      <a href="#josefina">Josefina</a>
+      <a href="#profesoras">Profesoras</a>
       <a href="#precios">Precios</a>
       <a href="#faq">Preguntas</a>
     </div>
@@ -306,7 +315,7 @@
     <div>
       <span class="hero-eyebrow">Nuevo: 7 días de prueba gratis</span>
       <h1>Tu espacio de yoga, cuando tú quieras.</h1>
-      <p class="lead">Clases grabadas de Alineamiento, Harmonic, Meditación y Pranayama, guiadas por Josefina Fernández. Practica desde tu casa, a tu ritmo, sin horarios fijos.</p>
+      <p class="lead">Clases grabadas de Alineamiento, Harmonic, Meditación y Pranayama, guiadas por Emma Marín, Josefina Fernández y Harish Morán. Practica desde tu casa, a tu ritmo, sin horarios fijos.</p>
       <div class="hero-ctas">
         <a href="registro.html" class="btn btn-primary">Empieza tu prueba gratis de 7 días</a>
         <a href="#clases" class="btn btn-outline-light">Ver una clase de muestra</a>
@@ -314,10 +323,12 @@
       <p class="hero-note">Sin tarjeta bloqueada de por vida: cancela cuando quieras.</p>
     </div>
     <div class="video-frame">
-      <!-- Foto real del sitio actual. Reemplazar por el embed de Vimeo cuando tengamos el video de muestra grabado -->
-      <img src="https://conexionar.com/wp-content/uploads/2025/03/SAM_5618-1-2048x1365.jpg" alt="Clase de yoga Conexionar">
-      <span class="play-button">▶</span>
-      <span class="video-badge">▶ Video de muestra próximamente</span>
+      <iframe
+        src="https://player.vimeo.com/video/1207923372?background=1&muted=1&loop=1&autoplay=1"
+        frameborder="0"
+        allow="autoplay; fullscreen"
+        style="position:absolute; top:0; left:0; width:100%; height:100%; filter:grayscale(1);">
+      </iframe>
     </div>
   </div>
 </section>
@@ -388,20 +399,47 @@
   </div>
 </section>
 
-<section id="josefina" class="teacher">
-  <div class="container teacher-grid">
-    <div class="teacher-photo">
-      <img src="https://conexionar.com/wp-content/uploads/2025/05/prof-josefinaBW.png" alt="Profesora de yoga Josefina Fernández">
+<section id="profesoras" class="teacher">
+  <div class="container">
+    <div class="section-head">
+      <h2>Conoce a nuestras guías</h2>
+      <p>La experiencia de cada práctica comienza con quienes nos acompañan en el camino.</p>
     </div>
-    <div>
-      <h2>Josefina Fernández</h2>
-      <div>
-        <span class="credential">Sadhana Yoga</span>
-        <span class="credential">Harmonic Yoga</span>
-        <span class="credential">Fisioyoga</span>
+    <div class="guides-grid">
+      <div class="guide-card">
+        <div class="guide-photo">
+          <img src="assets/emma-marin.jpg" alt="Emma Marín, profesora de yoga">
+        </div>
+        <h3>Emma Marín</h3>
+        <div>
+          <span class="credential">Harmonic</span>
+          <span class="credential">Alineamiento</span>
+        </div>
+        <p class="bio">Directora de Sadhana Yoga, escuela especializada en formación de profesores de calidad. Creadora del método Harmonic Yoga, certificada por Yoga Alliance Estados Unidos, título máximo de Senior Teacher en Jyotim Yoga y certificada como "Maestro Experto" por CSEN. Con 25 años en el mundo de la enseñanza, se caracteriza no solo por una técnica impecable sino por valores humanos que trascienden desde el profundo conocimiento de la filosofía y ciencia del yoga.</p>
       </div>
-      <p class="bio">Josefina es la profesora principal de Conexionar. Su formación combina distintas escuelas de yoga con una mirada terapéutica del movimiento, para que cada clase sea segura, clara y adaptable a tu cuerpo.</p>
-      <a href="#clases" class="btn btn-outline">Conoce sus clases</a>
+      <div class="guide-card">
+        <div class="guide-photo">
+          <img src="assets/josefina-fernandez.jpg" alt="Josefina Fernández, profesora de yoga">
+        </div>
+        <h3>Josefina Fernández</h3>
+        <div>
+          <span class="credential">Harmonic</span>
+          <span class="credential">Alineamiento</span>
+        </div>
+        <p class="bio">Administradora en Artes Culinarias y maquilladora. Se inicia en el mundo del yoga el año 2016. El 2020 comienza su formación de profesores en Sadhana Yoga para especializarse en Harmonic Yoga y alineamiento fisiológico del asana. Luego de tres años de formación, toma el curso de Fisioyoga en la misma escuela.</p>
+      </div>
+      <div class="guide-card">
+        <div class="guide-photo">
+          <img src="assets/harish-moran.jpg" alt="Harish Morán, profesor de yoga">
+        </div>
+        <h3>Harish Morán</h3>
+        <div>
+          <span class="credential">Harmonic</span>
+          <span class="credential">Pranayama</span>
+          <span class="credential">Meditación</span>
+        </div>
+        <p class="bio">Psicólogo transpersonal y Coach Ontológico de Newfield. Vivió 12 años en un Ashram en India (1995-2007) practicando meditación y yoga bajo la guía de su maestra, la Santa Madre de Puri. Imparte clases de filosofía del yoga en la escuela Sadhana Yoga. Sus clases se caracterizan por un sello personal donde se incluyen pranayamas y cantos de mantras.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -518,11 +556,11 @@
     <div class="footer-grid">
       <div>
         <div class="logo">
-          <img class="logo-leaves" src="https://conexionar.com/wp-content/uploads/2025/05/Logo-Oscuro-Conexionar.png" alt="Conexionar">
+          <span class="logo-text">Conexionar</span>
         </div>
         <p style="margin-top:14px; opacity:.75; max-width:280px;">Yoga online por suscripción para mujeres en Chile.</p>
         <div class="footer-social">
-          <a href="https://instagram.com/conexionar" aria-label="Instagram">Instagram</a>
+          <a href="https://instagram.com/conexionar.sadhana" aria-label="Instagram">Instagram</a>
         </div>
       </div>
       <div>
@@ -536,7 +574,7 @@
         <h4>Cuenta</h4>
         <a href="login.html">Iniciar sesión</a>
         <a href="registro.html">Crear cuenta</a>
-        <a href="https://wa.me/56900000000">WhatsApp</a>
+        <a href="https://wa.me/56933176878">WhatsApp</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -546,7 +584,7 @@
   </div>
 </footer>
 
-<a class="whatsapp-float" href="https://wa.me/56900000000" target="_blank" aria-label="Escríbenos por WhatsApp">☎</a>
+<a class="whatsapp-float" href="https://wa.me/56933176878" target="_blank" aria-label="Escríbenos por WhatsApp">☎</a>
 
 <script>
   // Menú móvil
