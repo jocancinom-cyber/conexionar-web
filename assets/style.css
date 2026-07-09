@@ -173,16 +173,33 @@ header{
   position:absolute; bottom:9px; right:10px; z-index:2; background:rgba(0,0,0,.35); color:var(--blanco);
   font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:999px; letter-spacing:.2px;
 }
-.class-tile .body{padding:18px 20px;}
+.class-tile .favorite-btn{
+  position:absolute; top:10px; right:10px; z-index:3;
+  width:30px; height:30px; border-radius:50%; border:none; cursor:pointer;
+  background:rgba(0,0,0,.32); backdrop-filter:blur(2px);
+  display:flex; align-items:center; justify-content:center;
+  transition:background .2s ease, transform .15s ease;
+}
+.class-tile .favorite-btn:hover{background:rgba(0,0,0,.5); transform:scale(1.08);}
+.class-tile .favorite-btn svg{width:15px; height:15px;}
+.class-tile .favorite-btn.is-favorite svg path{fill:var(--tan); stroke:var(--tan);}
+.class-tile .body{padding:16px 20px 18px;}
 .class-tile .type-tag{
   display:inline-block; font-size:10.5px; font-weight:700; color:var(--taupe-oscuro);
   background:var(--hueso); padding:4px 11px; border-radius:999px; margin-bottom:10px;
   text-transform:uppercase; letter-spacing:.8px;
 }
-.class-tile h3{font-size:17px; margin-bottom:5px; letter-spacing:.2px;}
-.class-tile .meta{font-size:13px; color:var(--texto-secundario); display:flex; align-items:center; gap:6px;}
-.class-tile .meta .instructor{font-weight:700; color:var(--texto);}
-.class-tile .meta .dot{opacity:.5;}
+.class-tile h3{font-size:17px; margin-bottom:9px; letter-spacing:.2px;}
+.class-tile .instructor-row{display:flex; align-items:center; gap:8px; margin-bottom:8px;}
+.class-tile .instructor-avatar{
+  width:22px; height:22px; border-radius:50%; object-fit:cover; flex-shrink:0;
+  background:var(--taupe-claro);
+}
+.class-tile .instructor-name{font-size:12.5px; font-weight:700; color:var(--texto);}
+.class-tile .meta{font-size:12.5px; color:var(--texto-secundario); display:flex; align-items:center; gap:7px;}
+.class-tile .level-dots{display:inline-flex; gap:3px;}
+.class-tile .level-dots span{width:5px; height:5px; border-radius:50%; background:var(--taupe-claro);}
+.class-tile .level-dots span.filled{background:var(--tan);}
 .empty-state{
   text-align:center; padding:60px 24px; color:var(--texto-secundario);
 }
