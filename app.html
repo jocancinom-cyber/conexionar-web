@@ -181,12 +181,18 @@
       <a href="clase.html?id=${c.id}" class="class-tile">
         <div class="thumb">
           ${c.thumbnail_url ? `<img src="${c.thumbnail_url}" alt="${c.title}">` : ""}
+          <div class="play-badge">
+            <svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+          </div>
           ${c.duration_minutes ? `<span class="duration">${c.duration_minutes} min</span>` : ""}
         </div>
         <div class="body">
           <span class="type-tag">${TIPO_LABEL[c.type] || c.type}</span>
           <h3>${c.title}</h3>
-          <div class="meta">${NIVEL_LABEL[c.level] || c.level || ""}</div>
+          <div class="meta">
+            ${c.instructor ? `<span class="instructor">${c.instructor}</span><span class="dot">·</span>` : ""}
+            <span>${NIVEL_LABEL[c.level] || c.level || ""}</span>
+          </div>
         </div>
       </a>
     `).join("");
