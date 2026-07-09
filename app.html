@@ -73,9 +73,27 @@
 <script>
   const TIPO_LABEL = { alineamiento: "Alineamiento", harmonic: "Harmonic", meditacion: "Meditación", pranayama: "Pranayama" };
   const NIVEL_LABEL = { principiante: "Principiante", intermedio: "Intermedio", avanzado: "Avanzado", todo_nivel: "Todo nivel" };
+  const NIVEL_PUNTOS = { principiante: 1, intermedio: 2, avanzado: 3, todo_nivel: 0 };
+  const INSTRUCTOR_FOTO = {
+    "Emma Marín": "assets/emma-marin.jpg",
+    "Josefina Fernández": "assets/josefina-fernandez.jpg",
+    "Harish Morán": "assets/harish-moran.jpg",
+  };
+
+  function renderLevelDots(nivel) {
+    const llenos = NIVEL_PUNTOS[nivel] || 0;
+    if (nivel === "todo_nivel") return "";
+    let html = `<span class="level-dots">`;
+    for (let i = 1; i <= 3; i++) {
+      html += `<span class="${i <= llenos ? "filled" : ""}"></span>`;
+    }
+    html += `</span>`;
+    return html;
+  }
 
   let todasLasClases = [];
   let perfilActual = null;
+  let favoritosIds = new Set();
 
   function mostrarMensajePago() {
     const params = new URLSearchParams(window.location.search);
@@ -177,10 +195,16 @@
       grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:var(--texto-secundario); padding:40px 0;">No hay clases que coincidan con estos filtros.</p>`;
       return;
     }
-    grid.innerHTML = clases.map((c) => `
+    grid.innerHTML = clases.map((c) => {
+      const esFavorita = favoritosIds.has(c.id);
+      const foto = INSTRUCTOR_FOTO[c.instructor];
+      return `
       <a href="clase.html?id=${c.id}" class="class-tile">
         <div class="thumb">
           ${c.thumbnail_url ? `<img src="${c.thumbnail_url}" alt="${c.title}">` : ""}
+          <button class="favorite-btn ${esFavorita ? "is-favorite" : ""}" data-class-id="${c.id}" aria-label="Guardar clase" title="Guardar clase">
+            <svg viewBox="0 0 24 24" fill="${esFavorita ? "currentColor" : "none"}" stroke="#fff" stroke-width="2"><path d="M12 21s-7.2-4.6-10-9.3C.3 8.2 2 4.5 5.7 4c2.1-.3 4 .7 6.3 3 2.3-2.3 4.2-3.3 6.3-3 3.7.5 5.4 4.2 3.7 7.7C19.2 16.4 12 21 12 21z"/></svg>
+          </button>
           <div class="play-badge">
             <svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
           </div>
@@ -189,14 +213,47 @@
         <div class="body">
           <span class="type-tag">${TIPO_LABEL[c.type] || c.type}</span>
           <h3>${c.title}</h3>
+          ${c.instructor ? `
+          <div class="instructor-row">
+            ${foto ? `<img class="instructor-avatar" src="${foto}" alt="${c.instructor}">` : `<span class="instructor-avatar"></span>`}
+            <span class="instructor-name">${c.instructor}</span>
+          </div>` : ""}
           <div class="meta">
-            ${c.instructor ? `<span class="instructor">${c.instructor}</span><span class="dot">·</span>` : ""}
             <span>${NIVEL_LABEL[c.level] || c.level || ""}</span>
+            ${renderLevelDots(c.level)}
           </div>
         </div>
       </a>
-    `).join("");
+    `;
+    }).join("");
   }
+
+  async function toggleFavorito(claseId, boton) {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) return;
+    const userId = session.user.id;
+    const yaEsFavorita = favoritosIds.has(claseId);
+
+    if (yaEsFavorita) {
+      favoritosIds.delete(claseId);
+      boton.classList.remove("is-favorite");
+      boton.querySelector("svg").setAttribute("fill", "none");
+      await supabaseClient.from("favorites").delete().eq("user_id", userId).eq("class_id", claseId);
+    } else {
+      favoritosIds.add(claseId);
+      boton.classList.add("is-favorite");
+      boton.querySelector("svg").setAttribute("fill", "currentColor");
+      await supabaseClient.from("favorites").insert({ user_id: userId, class_id: claseId });
+    }
+  }
+
+  document.getElementById("classGrid").addEventListener("click", (e) => {
+    const boton = e.target.closest(".favorite-btn");
+    if (!boton) return;
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFavorito(boton.dataset.classId, boton);
+  });
 
   function aplicarFiltros() {
     const tipo = document.getElementById("filtroTipo").value;
@@ -269,6 +326,9 @@
     }
 
     await cargarContinuar(user.id, acceso);
+
+    const { data: favs } = await supabaseClient.from("favorites").select("class_id").eq("user_id", user.id);
+    if (favs) favoritosIds = new Set(favs.map((f) => f.class_id));
 
     const { data: clases, error } = await supabaseClient
       .from("classes")
